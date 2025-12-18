@@ -50,12 +50,23 @@ def recordActiveFile(f):
     fileA = f
 
 
+def launchBeyondCompare(fileLeft, fileRight):
+    """Launch Beyond Compare with two files."""
+    print(f"BeyondCompare comparing: LEFT [{fileLeft}] | RIGHT [{fileRight}]")
+    
+    if os.path.exists(get_location()):
+        subprocess.Popen([get_location(), fileLeft, fileRight])
+    elif is_osx():
+        sublime.error_message(
+            "Could not find bcompare.\nPlease install the command line tools or set the path in settings.")
+    else:
+        sublime.error_message(
+            "Could not find Beyond Compare. Please set the path to your tool in BeyondCompare.sublime-settings.")
+
+
 def runBeyondCompare():
     if fileA is not None and fileB is not None:
-        print(
-            "BeyondCompare comparing: LEFT [" + fileA + "] | RIGHT [" + fileB + "]")
-        subprocess.Popen([get_location(), fileA, fileB])
-        print("Should be open...")
+        launchBeyondCompare(fileA, fileB)
     else:
         sublime.error_message(
             "You must have activated TWO files to compare.\nPlease select two tabs to compare and try again")
@@ -116,17 +127,7 @@ class BeyondCompareWithActiveCommand(sublime_plugin.TextCommand):
             return
         
         # Run the comparison
-        print("BeyondCompare comparing: LEFT [" + active_file + "] | RIGHT [" + clicked_file + "]")
-        
-        if os.path.exists(get_location()):
-            subprocess.Popen([get_location(), active_file, clicked_file])
-            print("Should be open...")
-        elif is_osx():
-            sublime.error_message(
-                "Could not find bcompare.\nPlease install the command line tools or set the path in settings.")
-        else:
-            sublime.error_message(
-                "Could not find Beyond Compare. Please set the path to your tool in BeyondCompare.sublime-settings.")
+        launchBeyondCompare(active_file, clicked_file)
     
     def is_visible(self):
         # Only show the menu item if the clicked view has a file
