@@ -52,7 +52,7 @@ def recordActiveFile(f):
 
 def launchBeyondCompare(fileLeft, fileRight):
     """Launch Beyond Compare with two files."""
-    print(f"BeyondCompare comparing: LEFT [{fileLeft}] | RIGHT [{fileRight}]")
+    print("BeyondCompare comparing: LEFT [{0}] | RIGHT [{1}]".format(fileLeft, fileRight))
     
     location = get_location()
     if location and os.path.exists(location):
