@@ -54,8 +54,9 @@ def launchBeyondCompare(fileLeft, fileRight):
     """Launch Beyond Compare with two files."""
     print(f"BeyondCompare comparing: LEFT [{fileLeft}] | RIGHT [{fileRight}]")
     
-    if os.path.exists(get_location()):
-        subprocess.Popen([get_location(), fileLeft, fileRight])
+    location = get_location()
+    if location and os.path.exists(location):
+        subprocess.Popen([location, fileLeft, fileRight])
     elif is_osx():
         sublime.error_message(
             "Could not find bcompare.\nPlease install the command line tools or set the path in settings.")
