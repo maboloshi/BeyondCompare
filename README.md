@@ -2,7 +2,7 @@ Description
 ===========
 The Sublime Text BeyondCompare plugin is a modified version of the excellent [WinMerge/FileMerge](https://github.com/SublimeText/WinMerge) plugin.
 
-[BeyondCompare](http://www.scootersoftware.com/) is a nice GUI file difference engine that is cross platform, with support for both Windows and OSX. This package adds support to Sublime Text 2 and 3 for allowing you to diff the last two active views, even if they are in different Sublime windows.
+[BeyondCompare](http://www.scootersoftware.com/) is a nice GUI file difference engine that is cross platform, with support for both Windows and OSX. This package adds support to Sublime Text 2, 3 and 4 for allowing you to diff the last two active views, even if they are in different Sublime windows.
 
 Package Installation
 ====================
