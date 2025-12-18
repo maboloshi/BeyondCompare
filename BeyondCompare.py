@@ -91,6 +91,48 @@ class BeyondCompareCommand(sublime_plugin.ApplicationCommand):
                 "Could not find Beyond Compare. Please set the path to your tool in BeyondCompare.sublime-settings.")
 
 
+class BeyondCompareWithActiveCommand(sublime_plugin.TextCommand):
+    """Compare the current view with the active view from a tab context menu."""
+    
+    def run(self, edit):
+        # Get the file from the view that was right-clicked
+        clicked_file = self.view.file_name()
+        
+        # Get the currently active view (the one that has focus)
+        active_view = self.view.window().active_view()
+        active_file = active_view.file_name() if active_view else None
+        
+        # Make sure we have two different files
+        if clicked_file is None:
+            sublime.error_message("The clicked tab does not have a file associated with it.")
+            return
+        
+        if active_file is None:
+            sublime.error_message("There is no active file to compare with.")
+            return
+        
+        if clicked_file == active_file:
+            sublime.error_message("Cannot compare a file with itself. Please select a different tab.")
+            return
+        
+        # Run the comparison
+        print("BeyondCompare comparing: LEFT [" + active_file + "] | RIGHT [" + clicked_file + "]")
+        
+        if os.path.exists(get_location()):
+            subprocess.Popen([get_location(), active_file, clicked_file])
+            print("Should be open...")
+        elif is_osx():
+            sublime.error_message(
+                "Could not find bcompare.\nPlease install the command line tools or set the path in settings.")
+        else:
+            sublime.error_message(
+                "Could not find Beyond Compare. Please set the path to your tool in BeyondCompare.sublime-settings.")
+    
+    def is_visible(self):
+        # Only show the menu item if the clicked view has a file
+        return self.view.file_name() is not None
+
+
 class BeyondCompareFileListener(sublime_plugin.EventListener):
     def on_activated(self, view):
         if view.file_name() is not None and view.file_name() != fileA:
