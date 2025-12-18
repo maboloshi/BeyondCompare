@@ -1,0 +1,14 @@
+
+BeyondCompare 2.0.8
+-------------------
+
+New Feature
+
+- Add support for right-clicking a tab and comparing it with the currently active tab
+- New context menu item: "BeyondCompare: Compare with Active Tab"
+
+Improvements
+
+- Extract `launchBeyondCompare()` helper function to reduce code duplication
+- Add null safety check for `get_location()` return value
+- Use f-string formatting for better readability

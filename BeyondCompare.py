@@ -50,12 +50,24 @@ def recordActiveFile(f):
     fileA = f
 
 
+def launchBeyondCompare(fileLeft, fileRight):
+    """Launch Beyond Compare with two files."""
+    print(f"BeyondCompare comparing: LEFT [{fileLeft}] | RIGHT [{fileRight}]")
+    
+    location = get_location()
+    if location and os.path.exists(location):
+        subprocess.Popen([location, fileLeft, fileRight])
+    elif is_osx():
+        sublime.error_message(
+            "Could not find bcompare.\nPlease install the command line tools or set the path in settings.")
+    else:
+        sublime.error_message(
+            "Could not find Beyond Compare. Please set the path to your tool in BeyondCompare.sublime-settings.")
+
+
 def runBeyondCompare():
     if fileA is not None and fileB is not None:
-        print(
-            "BeyondCompare comparing: LEFT [" + fileA + "] | RIGHT [" + fileB + "]")
-        subprocess.Popen([get_location(), fileA, fileB])
-        print("Should be open...")
+        launchBeyondCompare(fileA, fileB)
     else:
         sublime.error_message(
             "You must have activated TWO files to compare.\nPlease select two tabs to compare and try again")
@@ -89,6 +101,38 @@ class BeyondCompareCommand(sublime_plugin.ApplicationCommand):
         else:
             sublime.error_message(
                 "Could not find Beyond Compare. Please set the path to your tool in BeyondCompare.sublime-settings.")
+
+
+class BeyondCompareWithActiveCommand(sublime_plugin.TextCommand):
+    """Compare the current view with the active view from a tab context menu."""
+    
+    def run(self, edit):
+        # Get the file from the view that was right-clicked
+        clicked_file = self.view.file_name()
+        
+        # Get the currently active view (the one that has focus)
+        active_view = self.view.window().active_view()
+        active_file = active_view.file_name() if active_view else None
+        
+        # Make sure we have two different files
+        if clicked_file is None:
+            sublime.error_message("The clicked tab does not have a file associated with it.")
+            return
+        
+        if active_file is None:
+            sublime.error_message("There is no active file to compare with.")
+            return
+        
+        if clicked_file == active_file:
+            sublime.error_message("Cannot compare a file with itself. Please select a different tab.")
+            return
+        
+        # Run the comparison
+        launchBeyondCompare(active_file, clicked_file)
+    
+    def is_visible(self):
+        # Only show the menu item if the clicked view has a file
+        return self.view.file_name() is not None
 
 
 class BeyondCompareFileListener(sublime_plugin.EventListener):
